@@ -34,7 +34,7 @@ const CATEGORIES = [
     blurb: "Build a shot that holds up in games. Start with form, then add speed and movement.",
     drills: [
       d("Five spot shooting", "beginner", "Five spots around the arc. Make three at each spot before you move on.", ["cornerL", "wingL", "top", "wingR", "cornerR"]),
-      d("Form shooting", "beginner", "One hand, close to the rim. Elbow under the ball, follow through, hold your finish.", ["rim"]),
+      d("Form shooting", "beginner", "One hand, close to the rim. Elbow under the ball, follow through, hold your finish.", ["rim"], "https://www.youtube.com/shorts/T2RN3us27kw"),
       d("Free throw routine", "beginner", "Same routine every time. Breathe, bounce, shoot. Try to make ten in a row.", ["ft"]),
       d("Catch and shoot", "intermediate", "Feet ready before the ball arrives. Catch, set, and shoot in one smooth motion.", ["cornerL", "wingL", "wingR", "cornerR"]),
       d("Elbow pull-ups", "advanced", "Attack one dribble, stop on balance, and rise straight up into your shot.", ["elbowL", "elbowR"]),
