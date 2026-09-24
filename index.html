@@ -3,43 +3,102 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101729">
-  <title>COURTSIDE | Basketball Training</title>
+  <meta name="theme-color" content="#0a1130">
+  <title>Nicole Timko | Summer Training</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="masthead"><a href="#top" class="brand"><span class="brand-mark">◉</span> COURTSIDE</a><span class="header-tag">TRAIN WITH INTENTION</span></header>
-  <main id="top">
-    <section class="hero">
-      <p class="eyebrow">YOUR NEXT SESSION STARTS HERE <span class="line"></span> 01 / 03</p>
-      <h1>Put in the work.<br><em>Own the court.</em></h1>
-      <p class="intro">A focused basketball workout built around your goal, time, and setup. Tell us what you have. Get straight to training.</p>
-      <div class="hero-stats"><div><strong>05</strong><span>TRAINING GOALS</span></div><div><strong>20–60</strong><span>MINUTE SESSIONS</span></div><div><strong>01</strong><span>BETTER YOU</span></div></div>
-      <div class="court-art" aria-hidden="true"><div class="court-circle"></div><div class="court-line"></div><div class="basketball"></div></div>
-    </section>
-    <section class="workspace" aria-labelledby="form-title">
-      <div class="section-heading"><div><p class="eyebrow">01 / BUILD YOUR SESSION</p><h2 id="form-title">The game plan</h2></div><p>Set the parameters. We’ll build the reps.</p></div>
-      <form id="workout-form" novalidate>
-        <div class="field full"><label for="goal">WHAT ARE YOU WORKING ON?</label><select id="goal" required><option value="">Select your focus</option><option value="shooting">Shooting</option><option value="handling">Ball handling</option><option value="finishing">Finishing</option><option value="defense">Defense</option><option value="conditioning">Conditioning</option></select></div>
-        <div class="field"><label for="minutes">TIME AVAILABLE</label><select id="minutes"><option value="20">20 minutes</option><option value="30" selected>30 minutes</option><option value="45">45 minutes</option><option value="60">60 minutes</option></select></div>
-        <div class="field"><label for="level">EXPERIENCE LEVEL</label><select id="level"><option value="beginner">Beginner</option><option value="intermediate" selected>Intermediate</option><option value="advanced">Advanced</option></select></div>
-        <div class="field"><label for="space">TRAINING SPACE</label><select id="space"><option value="court">Full court / open space</option><option value="small">Small space</option></select></div>
-        <fieldset class="field equipment"><legend>EQUIPMENT AVAILABLE</legend><label class="check"><input type="checkbox" name="equipment" value="ball" checked> Basketball</label><label class="check"><input type="checkbox" name="equipment" value="hoop" checked> Hoop</label></fieldset>
-        <div class="form-footer"><span id="status" role="status" aria-live="polite">Ready when you are.</span><button id="submit" type="submit">BUILD MY WORKOUT <span aria-hidden="true">↗</span></button></div>
-      </form>
-    </section>
-    <section id="result" class="result" aria-live="polite" hidden></section>
-    <section class="workspace strength" aria-labelledby="strength-title">
-      <div class="section-heading"><div><p class="eyebrow">03 / STRENGTH LIBRARY</p><h2 id="strength-title">Build beyond the court</h2></div><p>Explore real exercises for basketball strength work.</p></div>
+  <!-- Shared basketball graphic used by every court diagram -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <g id="ball">
+        <circle r="12" fill="#f47b32"/>
+        <path d="M-12 0H12M0-12V12M-8.5-8.5Q0 0-8.5 8.5M8.5-8.5Q0 0 8.5 8.5" fill="none" stroke="#2a1206" stroke-width="1.4"/>
+      </g>
+    </defs>
+  </svg>
+
+  <header class="hero">
+    <div class="wrap">
+      <p class="brand">Nicole Timko <span>Summer Training</span></p>
+
+      <h1>Drills from<br>a pro.<br>Reps from you.</h1>
+
+      <div class="court-art" aria-hidden="true">
+        <div class="court-circle"></div>
+        <div class="court-line"></div>
+        <div class="basketball"></div>
+      </div>
+
+      <p class="specs">
+        <span>College Athlete</span>
+        <span>Carnegie Mellon University</span>
+        <span>Grades 6–12</span>
+      </p>
+    </div>
+  </header>
+
+  <nav id="tabs" class="tabs" aria-label="Skills"><div class="wrap" id="tabs-in"></div></nav>
+
+  <main class="wrap">
+    <div class="page-head">
+      <h2 id="title"></h2>
+      <p id="blurb"></p>
+      <div id="levels" class="levels" role="group" aria-label="Filter by level"></div>
+    </div>
+
+    <section id="grid" class="grid" aria-live="polite"></section>
+
+    <section id="strength" class="strength" hidden>
       <form id="exercise-form" novalidate>
-        <div class="field"><label for="focus">MUSCLE FOCUS</label><select id="focus"><option value="legs">Legs</option><option value="core">Core</option><option value="upper">Chest / upper body</option></select></div>
-        <div class="field"><label for="exercise-level">DIFFICULTY</label><select id="exercise-level"><option value="beginner">Beginner</option><option value="intermediate" selected>Intermediate</option><option value="advanced">Advanced</option></select></div>
-        <div class="form-footer"><span id="exercise-status" role="status" aria-live="polite">Exercises are fetched by our backend.</span><button id="exercise-submit" type="submit">FIND EXERCISES <span aria-hidden="true">↗</span></button></div>
+        <label>Muscle focus
+          <select id="focus">
+            <option value="legs">Legs</option>
+            <option value="core">Core</option>
+            <option value="upper">Chest / upper body</option>
+          </select>
+        </label>
+        <label>Difficulty
+          <select id="exercise-level">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate" selected>Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </label>
+        <button id="exercise-submit" type="submit" class="btn">Find exercises</button>
       </form>
-      <div id="exercise-results" class="exercise-results" aria-live="polite" hidden></div>
+      <p id="exercise-status" role="status" aria-live="polite" class="status">Pick a focus and difficulty to see exercises.</p>
+      <div id="exercise-results" hidden></div>
     </section>
   </main>
-  <footer>COURTSIDE <span>SHOW UP. PUT IN THE REPS.</span></footer>
+
+  <footer class="wrap">
+    <span>Nicole Timko Summer Training</span>
+    <a href="https://www.instagram.com/nicole.timko/" target="_blank" rel="noopener">@nicole.timko</a>
+  </footer>
+
+  <dialog id="viewer" aria-labelledby="viewer-title">
+    <button id="viewer-close" class="close" type="button" aria-label="Close">&times;</button>
+    <div class="sheet">
+      <div id="media" class="media"></div>
+      <div class="info">
+        <p id="viewer-meta" class="meta"></p>
+        <h3 id="viewer-title"></h3>
+        <p id="viewer-desc" class="desc"></p>
+        <div id="court-wrap" hidden>
+          <div id="court-box"></div>
+          <div class="court-bar">
+            <span id="court-label" aria-live="polite"></span>
+            <button id="court-toggle" type="button" class="btn small">Pause</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
   <script src="app.js" defer></script>
 </body>
 </html>
