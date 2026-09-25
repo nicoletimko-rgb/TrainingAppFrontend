@@ -1,12 +1,43 @@
-# Courtside frontend
+# Summer Training App
 
-Static HTML/CSS/JavaScript site. It sends `POST` requests with JSON to the Flask backend:
+A basketball training website featuring skill-based drills, animated court diagrams, instructional videos, and a strength exercise search.
 
-- `/api/workouts` for a timed basketball drill session.
-- `/api/exercises` for strength exercises fetched by the backend from API Ninjas.
+**Live site:** https://nicoletimko-rgb.github.io/TrainingAppFrontend/
 
-Open `app.js` and replace `const API_BASE = "http://localhost:5000";` with your Render URL (for example `https://YOUR-SERVICE.onrender.com`) before publishing. **This URL is public and safe to put in JavaScript. Never put the API Ninjas key here.**
+## Features
 
-To run locally, use `python3 -m http.server 5500` from this folder and open `http://localhost:5500`. Start the Flask server in another terminal. To publish, push the contents of this folder to a separate GitHub repo and enable **Settings → Pages → Deploy from a branch → main → / (root)**. Ask the backend developer (or edit your own Render service) to include your exact GitHub Pages origin in `FRONTEND_ORIGINS`.
+- Browse shooting, ball handling, finishing, defense, and conditioning drills.
+- Filter drills by experience level.
+- Open a drill to view its description, court diagram, and available video.
+- Select a muscle focus and difficulty in **Strength** to retrieve exercises from the backend.
 
-Test a valid workout, an empty workout goal, valid strength search, a strength search with no matches, and an unavailable backend. If the browser reports a CORS error, check `FRONTEND_ORIGINS` on Render. If it reports a network error, check `API_BASE` and the Render deployment.
+## How the backend connection works
+
+The Strength form sends the selected `focus` and `level` as JSON to `POST /api/exercises` on the Flask service hosted by Render. The backend validates the input, requests data from API Ninjas using its private API key, and returns JSON. The frontend displays the returned exercises and handles request errors.
+
+The Render service URL is set in `API_BASE` near the top of `app.js`. This URL is public. The API Ninjas key is stored **only on the backend**, never in this repo.
+
+The basketball drill list, court diagrams, and video links are managed in `app.js`. Browsing those drills does not call the backend.
+
+## Run locally
+
+From the frontend folder, run:
+
+```bash
+python3 -m http.server 5500
+```
+
+Open http://localhost:5500/ in your browser. Use this address rather than opening `index.html` as a `file://` page, especially when testing embedded YouTube videos.
+
+By default, `app.js` calls the deployed Render backend. To test against a backend running locally on port `5001`, temporarily change `API_BASE` in `app.js` to `http://localhost:5001`. Ensure the backend's `FRONTEND_ORIGINS` includes `http://localhost:5500`.
+
+## Project structure
+
+- `index.html` — page structure
+- `style.css` — site styling
+- `app.js` — drill library, video viewer, and Strength API request
+- `assets/` — local images and other site assets
+
+## Deployment
+
+The frontend is published with GitHub Pages. Changes pushed to this repository appear on the live site after GitHub Pages finishes deploying.
