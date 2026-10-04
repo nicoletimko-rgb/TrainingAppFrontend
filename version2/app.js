@@ -84,15 +84,6 @@ const CATEGORIES = [
     id: "strength", label: "Strength", icon: "💪", api: true,
     blurb: "Get stronger off the court. These exercises come from our exercise library.",
   },
-  // User pages (need the backend database). Their logic lives in tracker.js.
-  {
-    id: "summary", label: "My week", icon: "📊", page: "summary",
-    blurb: "See what you trained this week: workouts, hours, and shots made.",
-  },
-  {
-    id: "builder", label: "Workout builder", icon: "📝", page: "builder",
-    blurb: "Stack drills into a full workout, save it, and log your results each time you run it.",
-  },
 ];
 
 const LEVELS = ["all", "beginner", "intermediate", "advanced"];
@@ -251,16 +242,10 @@ function render() {
   renderTabs();
   $("#title").textContent = cat.label;
   $("#blurb").textContent = cat.blurb;
-  // Only normal drill categories show the level filter and the drill grid.
-  const isGrid = !cat.api && !cat.page;
-  $("#levels").hidden = !isGrid;
-  $("#grid").hidden = !isGrid;
+  $("#levels").hidden = !!cat.api;
+  $("#grid").hidden = !!cat.api;
   $("#strength").hidden = !cat.api;
-  $("#summary").hidden = cat.page !== "summary";   // "My week" section
-  $("#builder").hidden = cat.page !== "builder";   // "Workout builder" section
-  if (isGrid) { renderLevels(); renderGrid(cat); }
-  if (cat.page === "summary") loadSummary();       // defined in tracker.js
-  if (cat.page === "builder") loadBuilder();       // defined in tracker.js
+  if (!cat.api) { renderLevels(); renderGrid(cat); }
 }
 
 /* ---------- Strength library (backend) ---------- */
@@ -313,5 +298,4 @@ exerciseForm.addEventListener("submit", async event => {
 /* ---------- Start ---------- */
 const fromHash = location.hash.slice(1);
 if (CATEGORIES.some(c => c.id === fromHash)) state.cat = fromHash; // shareable links like site.com/#shooting
-setupTracker(); // week navigation buttons (tracker.js)
 render();

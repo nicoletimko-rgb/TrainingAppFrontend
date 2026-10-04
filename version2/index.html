@@ -73,37 +73,6 @@
       <p id="exercise-status" role="status" aria-live="polite" class="status">Pick a focus and difficulty to see exercises.</p>
       <div id="exercise-results" hidden></div>
     </section>
-    <!-- ===== MY WEEK: weekly summary (filled in by tracker.js) ===== -->
-    <section id="summary" class="tracker" hidden>
-      <div class="week-nav">
-        <button id="week-prev" type="button" class="btn small ghost">Previous week</button>
-        <strong id="week-label"></strong>
-        <button id="week-next" type="button" class="btn small ghost">Next week</button>
-        <button id="week-now" type="button" class="btn small">This week</button>
-      </div>
-      <div id="summary-stats" class="stats"></div>
-      <p id="summary-status" role="status" aria-live="polite" class="status"></p>
-      <div id="summary-list"></div>
-    </section>
-
-    <!-- ===== WORKOUT BUILDER: create, save, and log workouts ===== -->
-    <section id="builder" class="tracker" hidden>
-      <h3>Build a workout</h3>
-      <div class="builder-form">
-        <label>Workout name <input id="builder-name" type="text" maxlength="60" placeholder="Tuesday shooting day"></label>
-        <label>Category <select id="drill-cat"></select></label>
-        <label>Drill <select id="drill-pick"></select></label>
-        <label>Minutes <input id="drill-minutes" type="number" min="0" value="10"></label>
-        <label>Planned shots (0 if none) <input id="drill-shots" type="number" min="0" value="50"></label>
-        <button id="drill-add" type="button" class="btn small">Add drill</button>
-      </div>
-      <div id="draft-list"></div>
-      <button id="builder-save" type="button" class="btn">Save workout</button>
-      <p id="builder-status" role="status" aria-live="polite" class="status"></p>
-      <div id="log-panel" class="log-panel" hidden></div>
-      <h3>Saved workouts</h3>
-      <div id="saved-list"></div>
-    </section>
   </main>
 
   <footer class="wrap">
@@ -130,7 +99,6 @@
     </div>
   </dialog>
 
-  <script src="tracker.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>
