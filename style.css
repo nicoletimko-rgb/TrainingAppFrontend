@@ -334,6 +334,11 @@ input { font: inherit; background: #0a1230; border: 1px solid var(--line); borde
 .log-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 12px 0; border-bottom: 1px solid #ffffff10; }
 .log-row strong { grid-column: 1 / -1; }
 .log-panel .btn { margin-top: 16px; }
+.log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 @media (max-width: 600px) {
   .stat-body { flex-direction: column; align-items: stretch; } .ring { align-self: center; }

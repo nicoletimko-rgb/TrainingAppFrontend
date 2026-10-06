@@ -34,6 +34,11 @@ const fromIso = s => new Date(`${s}T00:00:00`);
 function mondayOf(d) { const x = new Date(d); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
 const shortDate = d => d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 const pct = (made, att) => att ? Math.round(made / att * 100) : 0;
+// Made and attempted shots 0 unless shooting or finishing category
+function tracksShots(drill) {
+  const category = (drill.category || "").trim().toLowerCase();
+  return category === "shooting" || category === "finishing";
+}
 
 function field(text, attrs) {
   const label = element("label", "", text);
@@ -60,6 +65,7 @@ function ring(p, big, small) {
   box.querySelector("span").textContent = small;
   return box;
 }
+
 
 /* ===================================================================
    PAGE 1: MY WEEK (dashboard)
@@ -212,18 +218,35 @@ function builderStatus(text, isError = false) {
 
 function setupBuilder() {
   const libraries = CATEGORIES.filter(c => c.drills);
-  const catSelect = $("#drill-cat"), pick = $("#drill-pick");
+  const catSelect = $("#drill-cat");
+  const pick = $("#drill-pick");
+  const shotsInput = $("#drill-shots");
   libraries.forEach(c => catSelect.append(new Option(c.label, c.id)));
   const fillDrills = () => {
     const cat = libraries.find(c => c.id === catSelect.value);
-    pick.replaceChildren(...cat.drills.map(drill => new Option(drill.title, drill.title)));
+
+    pick.replaceChildren(
+      ...cat.drills.map(drill => new Option(drill.title, drill.title))
+    );
+
+    const shouldTrackShots =
+      cat.id === "shooting" || cat.id === "finishing";
+
+    shotsInput.disabled = !shouldTrackShots;
+
+    if (!shouldTrackShots) {
+      shotsInput.value = 0;
+    }
   };
   catSelect.addEventListener("change", fillDrills);
   fillDrills();
 
   $("#drill-add").addEventListener("click", () => {
     const cat = libraries.find(c => c.id === catSelect.value);
-    const minutes = Number($("#drill-minutes").value), shots = Number($("#drill-shots").value);
+    const minutes = Number($("#drill-minutes").value);
+    const shouldTrackShots =
+      cat.id === "shooting" || cat.id === "finishing";
+    const shots = shouldTrackShots ? Number(shotsInput.value) : 0;
     if (!Number.isInteger(minutes) || minutes < 0 || !Number.isInteger(shots) || shots < 0) {
       return builderStatus("Minutes and shots must be whole numbers, 0 or more.", true);
     }
@@ -296,31 +319,97 @@ async function refreshSaved() {
 // Log form for a saved workout: one row per drill, starting at the planned values.
 function openLog(workout) {
   const panel = $("#log-panel"), rows = [];
-  panel.replaceChildren(element("h3", "", `Log "${workout.name}"`));
-  const [dateLabel, dateInput] = field("Date", { type: "date", value: iso(new Date()) });
+  const heading = element("h3", "", `Log "${workout.name}"`);
+
+  const close = element("button", "btn small ghost", "×");
+  close.type = "button";
+  close.setAttribute("aria-label", "Cancel logging this session");
+
+  close.addEventListener("click", () => {
+    panel.hidden = true;
+    panel.replaceChildren();
+  });
+
+  const header = element("div", "log-header");
+  header.append(heading, close);
+
+  panel.replaceChildren(header);
+
+  const [dateLabel, dateInput] = field("Date", {
+    type: "date",
+    value: iso(new Date())
+  });
   panel.append(dateLabel);
+
   workout.drills.forEach(d => {
+    const category = (d.category || "").trim().toLowerCase();
+    const shouldTrackShots =
+      category === "shooting" || category === "finishing";
+
     const row = element("div", "log-row");
-    const [m, minutes] = field("Minutes", { type: "number", min: 0, value: d.minutes });
-    const [made, shotsMade] = field("Made", { type: "number", min: 0, value: 0 });
-    const [att, shotsAtt] = field("Attempted", { type: "number", min: 0, value: d.shots });
+    const [m, minutes] = field("Minutes", {
+      type: "number",
+      min: 0,
+      value: d.minutes
+    });
+
+    const [made, shotsMade] = field("Made", {
+      type: "number",
+      min: 0,
+      value: 0,
+      disabled: !shouldTrackShots
+    });
+
+    const [att, shotsAtt] = field("Attempted", {
+      type: "number",
+      min: 0,
+      value: shouldTrackShots ? d.shots : 0,
+      disabled: !shouldTrackShots
+    });
+
     row.append(element("strong", "", d.title), m, made, att);
     panel.append(row);
     rows.push({ d, minutes, shotsMade, shotsAtt });
   });
+
   const save = element("button", "btn", "Save session");
   save.type = "button";
+
   save.addEventListener("click", async () => {
-    const drills = rows.map(r => ({
-      title: r.d.title, category: r.d.category,
-      minutes: Number(r.minutes.value), shots_made: Number(r.shotsMade.value), shots_attempted: Number(r.shotsAtt.value)
-    }));
+    const drills = rows.map(r => {
+      const category = (r.d.category || "").trim().toLowerCase();
+      const shouldTrackShots =
+        category === "shooting" || category === "finishing";
+
+      return {
+        title: r.d.title,
+        category: r.d.category,
+        kind: r.d.kind || "basketball",
+        minutes: Number(r.minutes.value),
+        shots_made: shouldTrackShots ? Number(r.shotsMade.value) : 0,
+        shots_attempted: shouldTrackShots ? Number(r.shotsAtt.value) : 0
+      };
+    });
+
     try {
-      await api("/api/sessions", { method: "POST", body: JSON.stringify({ name: workout.name, performed_on: dateInput.value, drills }) });
+      await api("/api/sessions", {
+        method: "POST",
+        body: JSON.stringify({
+          name: workout.name,
+          performed_on: dateInput.value,
+          drills
+        })
+      });
+
       weekStart = mondayOf(fromIso(dateInput.value));
-      state.cat = "summary"; history.replaceState(null, "", "#summary"); render();
-    } catch (error) { builderStatus(errorText(error), true); }
+      state.cat = "summary";
+      history.replaceState(null, "", "#summary");
+      render();
+    } catch (error) {
+      builderStatus(errorText(error), true);
+    }
   });
+
   panel.append(save);
   panel.hidden = false;
   panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
