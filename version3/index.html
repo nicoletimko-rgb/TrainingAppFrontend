@@ -14,7 +14,6 @@
   <!-- Shared basketball graphic used by every court diagram -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2350e6"/><stop offset="1" stop-color="#9db6ff"/></linearGradient>
       <g id="ball">
         <circle r="12" fill="#f47b32"/>
         <path d="M-12 0H12M0-12V12M-8.5-8.5Q0 0-8.5 8.5M8.5-8.5Q0 0 8.5 8.5" fill="none" stroke="#2a1206" stroke-width="1.4"/>
@@ -74,7 +73,7 @@
       <p id="exercise-status" role="status" aria-live="polite" class="status">Pick a focus and difficulty to see exercises.</p>
       <div id="exercise-results" hidden></div>
     </section>
-    <!-- ===== MY WEEK: weekly dashboard (filled in by tracker.js) ===== -->
+    <!-- ===== MY WEEK: weekly summary (filled in by tracker.js) ===== -->
     <section id="summary" class="tracker" hidden>
       <div class="week-nav">
         <div class="week-arrows">
@@ -84,37 +83,28 @@
         <strong id="week-label"></strong>
         <button id="week-now" type="button" class="btn small">This week</button>
       </div>
+      <div id="summary-stats" class="stats"></div>
       <p id="summary-status" role="status" aria-live="polite" class="status"></p>
-      <div class="dash">
-        <div id="summary-stats" class="col"></div>
-        <div id="summary-side" class="col"></div>
-      </div>
+      <div id="summary-list"></div>
     </section>
 
     <!-- ===== WORKOUT BUILDER: create, save, and log workouts ===== -->
     <section id="builder" class="tracker" hidden>
-      <div class="builder-grid">
-        <div class="card">
-          <h3>Pick drills</h3>
-          <div class="builder-form">
-            <label>Workout name <input id="builder-name" type="text" maxlength="60" placeholder="Tuesday shooting day"></label>
-            <label>Category <select id="drill-cat"></select></label>
-            <label>Drill <select id="drill-pick"></select></label>
-            <label>Minutes <input id="drill-minutes" type="number" min="0" value="10"></label>
-            <label>Planned shots (0 if none) <input id="drill-shots" type="number" min="0" value="50"></label>
-            <button id="drill-add" type="button" class="btn small">Add drill</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-head"><h3>Your workout</h3><span id="draft-total" class="tag"></span></div>
-          <div id="draft-list"></div>
-          <button id="builder-save" type="button" class="btn">Save workout</button>
-          <p id="builder-status" role="status" aria-live="polite" class="status"></p>
-        </div>
+      <h3>Build a workout</h3>
+      <div class="builder-form">
+        <label>Workout name <input id="builder-name" type="text" maxlength="60" placeholder="Tuesday shooting day"></label>
+        <label>Category <select id="drill-cat"></select></label>
+        <label>Drill <select id="drill-pick"></select></label>
+        <label>Minutes <input id="drill-minutes" type="number" min="0" value="10"></label>
+        <label>Planned shots (0 if none) <input id="drill-shots" type="number" min="0" value="50"></label>
+        <button id="drill-add" type="button" class="btn small">Add drill</button>
       </div>
+      <div id="draft-list"></div>
+      <button id="builder-save" type="button" class="btn">Save workout</button>
+      <p id="builder-status" role="status" aria-live="polite" class="status"></p>
       <div id="log-panel" class="log-panel" hidden></div>
       <h3>Saved workouts</h3>
-      <div id="saved-list" class="saved-grid"></div>
+      <div id="saved-list"></div>
     </section>
   </main>
 
