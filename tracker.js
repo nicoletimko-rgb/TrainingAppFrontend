@@ -7,7 +7,6 @@
 const WEEK_GOAL = 5;   // workouts per week that fill the progress ring (change to taste)
 
 /* ---------- Identity + API helper ---------- */
-
 function userId() {
   let id = localStorage.getItem("trainingUserId");
   if (!id) { id = crypto.randomUUID(); localStorage.setItem("trainingUserId", id); }
