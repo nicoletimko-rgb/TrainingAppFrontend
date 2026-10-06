@@ -100,7 +100,7 @@ async function loadSummary() {
   const status = $("#summary-status"), main = $("#summary-stats"), side = $("#summary-side");
   const end = new Date(weekStart); end.setDate(end.getDate() + 6);
   $("#week-label").textContent = `${shortDate(weekStart)} to ${shortDate(end)}`;
-  $("#week-now").className = iso(weekStart) === iso(mondayOf(new Date())) ? "btn small ghost" : "btn small";
+  $("#week-now").className = iso(weekStart) === iso(mondayOf(new Date())) ? "btn small" : "btn small ghost";
   status.classList.remove("error");
   status.textContent = "Loading your week…";
   try {

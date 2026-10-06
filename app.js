@@ -289,14 +289,55 @@ exerciseForm.addEventListener("submit", async event => {
     } else {
       data.exercises.forEach(item => {
         const card = element("article", "exercise-card");
+
         card.append(
           element("h3", "", item.name),
-          element("p", "exercise-meta", `${item.muscle}, ${item.difficulty}. Equipment: ${item.equipment.join(", ") || "none listed"}`),
+          element(
+            "p",
+            "exercise-meta",
+            `${item.muscle}, ${item.difficulty}. Equipment: ${
+              item.equipment.join(", ") || "none listed"
+            }`
+          ),
           element("p", "", item.instructions)
         );
-        if (item.safety_info) card.append(element("p", "safety", `Form tip: ${item.safety_info}`));
+
+        if (item.safety_info) {
+          card.append(
+            element("p", "safety", `Form tip: ${item.safety_info}`)
+          );
+        }
+
+        const add = element("button", "btn small", "Add to workout");
+        add.type = "button";
+
+        add.addEventListener("click", () => {
+          draft.push({
+            title: item.name,
+            category: "Strength",
+            kind: "strength",
+            minutes: 10,
+            shots: 0
+          });
+
+          state.cat = "builder";
+          history.replaceState(null, "", "#builder");
+          render();
+        });
+
+        card.append(add);
         exerciseResults.append(card);
       });
+      //data.exercises.forEach(item => { 
+      //   const card = element("article", "exercise-card");
+      //   card.append(
+      //     element("h3", "", item.name),
+      //     element("p", "exercise-meta", `${item.muscle}, ${item.difficulty}. Equipment: ${item.equipment.join(", ") || "none listed"}`),
+      //     element("p", "", item.instructions)
+      //   );
+      //   if (item.safety_info) card.append(element("p", "safety", `Form tip: ${item.safety_info}`));
+      //   exerciseResults.append(card);
+      // });
     }
     exerciseResults.hidden = false;
     exerciseStatus.textContent = `${data.exercises.length} exercises found.`;
