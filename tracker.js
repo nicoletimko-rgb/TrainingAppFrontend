@@ -88,6 +88,70 @@ function metric(icon, label, value, frac) {
   return row;
 }
 
+function trainingLoadChart(sessions, weekStart) {
+  const totals = Array.from({ length: 7 }, () => ({
+    basketball: 0,
+    strength: 0
+  }));
+
+  sessions.forEach(session => {
+    const sessionDate = fromIso(session.performed_on);
+    const dayIndex = Math.round(
+      (sessionDate - weekStart) / (1000 * 60 * 60 * 24)
+    );
+
+    if (dayIndex < 0 || dayIndex > 6) return;
+
+    session.drills.forEach(drill => {
+      const kind = drill.kind === "strength" ? "strength" : "basketball";
+      totals[dayIndex][kind] += drill.minutes;
+    });
+  });
+
+  const maxMinutes = Math.max(
+    1,
+    ...totals.map(day => day.basketball + day.strength)
+  );
+
+  const chart = element("div", "load-chart");
+
+  totals.forEach((day, i) => {
+    const totalMinutes = day.basketball + day.strength;
+    const date = new Date(weekStart);
+    date.setDate(date.getDate() + i);
+
+    const dayColumn = element("div", "load-day");
+    const total = element(
+      "small",
+      "load-total",
+      totalMinutes ? `${totalMinutes}m` : ""
+    );
+
+    const bar = element("div", "load-bar");
+
+    const basketball = element("div", "load-basketball");
+    basketball.style.height =
+      `${(day.basketball / maxMinutes) * 100}%`;
+
+    const strength = element("div", "load-strength");
+    strength.style.height =
+      `${(day.strength / maxMinutes) * 100}%`;
+
+    bar.append(basketball, strength);
+
+    const label = element(
+      "strong",
+      "load-label",
+      date.toLocaleDateString(undefined, { weekday: "short" })
+    );
+
+    dayColumn.append(total, bar, label);
+    chart.append(dayColumn);
+  });
+
+  return chart;
+}
+
 // Rounded card with a heading and a small tag on the right.
 function statCard(title, tag, ...content) {
   const card = element("section", "stat-card"), head = element("div", "stat-head");
@@ -165,7 +229,7 @@ async function loadSummary() {
       sessions[0].drills.forEach(d => { const li = element("p", "", d.title); li.prepend(element("span", "check on", "✓")); latest.append(li); });
     } else latest.append(element("small", "", "Latest session"), element("p", "status", "Nothing yet."));
 
-    main.replaceChildren(statCard("This Week", "Workouts", week), statCard("Recent Sessions", `${sessions.length} logged`, recent));
+    main.replaceChildren(statCard("This Week", "Workouts", week), statCard("Training Load", "Basketball + strength minutes", trainingLoadChart(sessions, weekStart)), statCard("Recent Sessions", `${sessions.length} logged`, recent));
     side.replaceChildren(statCard("Shooting", "This week", shoot), statCard("Your Week", "Mon to Sun", days, latest));
     status.textContent = "";
   } catch (error) {

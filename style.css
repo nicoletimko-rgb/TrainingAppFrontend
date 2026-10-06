@@ -341,6 +341,62 @@ input { font: inherit; background: #0a1230; border: 1px solid var(--line); borde
   align-items: center;
 }
 
+.load-chart {
+  height: 215px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  align-items: end;
+  padding: 8px 4px 0;
+}
+
+.load-day {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 20px 1fr 24px;
+  gap: 6px;
+  text-align: center;
+  align-items: end;
+}
+
+.load-total {
+  color: var(--muted);
+  font-size: 12px;
+  min-height: 18px;
+}
+
+.load-bar {
+  height: 150px;
+  width: 100%;
+  max-width: 34px;
+  margin: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  overflow: hidden;
+  border-radius: 8px 8px 3px 3px;
+  background: #182445;
+}
+
+.load-basketball {
+  width: 100%;
+  min-height: 0;
+  background: linear-gradient(to top, #f46d28, #ffae63);
+  transition: height 0.25s ease;
+}
+
+.load-strength {
+  width: 100%;
+  min-height: 0;
+  background: linear-gradient(to top, #467fe8, #83b6ff);
+  transition: height 0.25s ease;
+}
+
+.load-label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 @media (max-width: 600px) {
   .stat-body { flex-direction: column; align-items: stretch; } .ring { align-self: center; }
   .sess { grid-template-columns: 44px 1fr; } .sess-ico { display: none; } .sess-side { grid-column: 1 / -1; justify-content: space-between; }
