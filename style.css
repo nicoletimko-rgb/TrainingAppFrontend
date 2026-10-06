@@ -25,6 +25,7 @@ h1, h2, h3, .tab, .brand { font-family: "Archivo Black", Impact, sans-serif; fon
     linear-gradient(165deg, #173aa8, #0a1130 75%);
 }
 
+
 /* Optional action photo */
 .hero::before {
   content: "";
