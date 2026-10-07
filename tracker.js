@@ -513,6 +513,9 @@ function openLog(workout) {
         })
       });
 
+      panel.hidden = true;
+      panel.replaceChildren();
+
       weekStart = mondayOf(fromIso(dateInput.value));
       state.cat = "summary";
       history.replaceState(null, "", "#summary");
