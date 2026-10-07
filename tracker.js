@@ -73,7 +73,12 @@ function ring(p, big, small) {
 
 let weekStart = mondayOf(new Date());
 
-const iconFor = label => (CATEGORIES.find(c => c.label === label) || {}).icon || "🏀";
+const iconFor = label => {const categoryClass = label
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+
+  return `<span class="category-swatch ${categoryClass}"></span>`;
+};
 const hm = m => `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, "0")}m`;
 const getWeek = start => api(`/api/sessions?week_start=${iso(mondayOf(start))}`);
 

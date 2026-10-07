@@ -423,6 +423,38 @@ input { font: inherit; background: #0a1230; border: 1px solid var(--line); borde
   font-size: 13px;
 }
 
+.category-swatch {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+/* Use the same colors as your Training Load bar sections. */
+.category-swatch.shooting {
+  background: #f46d28;
+}
+
+.category-swatch.finishing {
+  background: #9d44b5;
+}
+
+.category-swatch.strength {
+  background: #467fe8;
+}
+
+.category-swatch.ball-handling {
+  background: #a0eade;
+}
+
+.category-swatch.defense {
+  background: #cebacf;
+}
+
+.category-swatch.conditioning {
+  background: #c8e9a0;
+}
+
 @media (max-width: 600px) {
   .stat-body { flex-direction: column; align-items: stretch; } .ring { align-self: center; }
   .sess { grid-template-columns: 44px 1fr; } .sess-ico { display: none; } .sess-side { grid-column: 1 / -1; justify-content: space-between; }
