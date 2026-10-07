@@ -260,25 +260,108 @@ async function loadSummary() {
     shoot.append(ring(t.shots_attempted ? t.shots_made / t.shots_attempted : 0, t.shots_attempted ? `${pct(t.shots_made, t.shots_attempted)}%` : "-", "Accuracy"), shootRight);
 
     // YOUR WEEK: a tile per day, checked if a session was logged that date
-    const logged = new Set(sessions.map(s => s.performed_on));
+    // YOUR WEEK: click a day to see the session(s) logged on that date.
+    const sessionsByDate = new Map();
+
+    sessions.forEach(session => {
+      const forDay = sessionsByDate.get(session.performed_on) || [];
+      forDay.push(session);
+      sessionsByDate.set(session.performed_on, forDay);
+    });
+
     const days = element("div", "days");
+    const detail = element("div", "focus");
+
+    const showDay = day => {
+      const dateKey = iso(day);
+      const daySessions = sessionsByDate.get(dateKey) || [];
+
+      days.querySelectorAll(".day").forEach(cell => {
+        cell.classList.toggle("selected", cell.dataset.date === dateKey);
+      });
+
+      detail.replaceChildren(
+        element("small", "", `Sessions on ${shortDate(day)}`)
+      );
+
+      if (!daySessions.length) {
+        detail.append(
+          element("p", "status", "No session logged this day.")
+        );
+        return;
+      }
+
+      daySessions.forEach(session => {
+        detail.append(element("h4", "", session.name));
+
+        session.drills.forEach(drill => {
+          const line = element(
+            "p",
+            "",
+            `${drill.title} · ${drill.minutes} min`
+          );
+
+          line.prepend(element("span", "check on", "✓"));
+          detail.append(line);
+        });
+      });
+    };
+
     for (let i = 0; i < 7; i++) {
-      const day = new Date(weekStart); day.setDate(day.getDate() + i);
-      const cell = element("div", "day"), check = element("span", "check", logged.has(iso(day)) ? "✓" : "");
-      if (logged.has(iso(day))) cell.classList.add("done");
-      if (iso(day) === iso(new Date())) cell.classList.add("today");
-      cell.append(element("span", "", day.toLocaleDateString(undefined, { weekday: "short" })), element("strong", "", String(day.getDate())), check);
+      const day = new Date(weekStart);
+      day.setDate(day.getDate() + i);
+
+      const dateKey = iso(day);
+      const cell = element("div", "day");
+      const check = element(
+        "span",
+        "check",
+        sessionsByDate.has(dateKey) ? "✓" : ""
+      );
+
+      cell.dataset.date = dateKey;
+      cell.tabIndex = 0;
+      cell.setAttribute("role", "button");
+      cell.setAttribute("aria-label", `View sessions for ${shortDate(day)}`);
+
+      if (sessionsByDate.has(dateKey)) {
+        cell.classList.add("done");
+      }
+
+      if (dateKey === iso(new Date())) {
+        cell.classList.add("today");
+      }
+
+      cell.append(
+        element(
+          "span",
+          "",
+          day.toLocaleDateString(undefined, { weekday: "short" })
+        ),
+        element("strong", "", String(day.getDate())),
+        check
+      );
+
+      cell.addEventListener("click", () => showDay(day));
+
+      cell.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          showDay(day);
+        }
+      });
+
       days.append(cell);
     }
-    const latest = element("div", "focus");
-    if (sessions[0]) {
-      latest.append(element("small", "", "Latest session"), element("h4", "", sessions[0].name));
-      sessions[0].drills.forEach(d => { const li = element("p", "", d.title); li.prepend(element("span", "check on", "✓")); latest.append(li); });
-    } else latest.append(element("small", "", "Latest session"), element("p", "status", "Nothing yet."));
 
-    main.replaceChildren(statCard("This Week", "Workouts", week), statCard("Training Load", "Minutes by training category", trainingLoadChart(sessions, weekStart)), statCard("Recent Sessions", `${sessions.length} logged`, recent));
-    side.replaceChildren(statCard("Shooting", "This week", shoot), statCard("Your Week", "Mon to Sun", days, latest));
-    status.textContent = "";
+    detail.append(
+      element("small", "", "Select a day"),
+      element(
+        "p",
+        "status",
+        "Choose a day above to view its session details."
+      )
+    );
   } catch (error) {
     status.classList.add("error");
     status.textContent = errorText(error);
