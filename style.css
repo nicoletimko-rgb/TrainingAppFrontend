@@ -424,6 +424,7 @@ input { font: inherit; background: #0a1230; border: 1px solid var(--line); borde
 }
 
 .category-swatch {
+  display: block;
   width: 20px;
   height: 20px;
   border-radius: 4px;
