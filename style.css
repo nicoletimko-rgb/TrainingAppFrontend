@@ -431,25 +431,25 @@ input { font: inherit; background: #0a1230; border: 1px solid var(--line); borde
 }
 
 /* Use the same colors as your Training Load bar sections. */
-.category-swatch.shooting {
+.category-swatch.swatch-shooting {
   background: #f46d28;
 }
 
-.category-swatch.finishing {
+.category-swatch.swatch-finishing {
   background: #9d44b5;
 }
 
-.category-swatch.strength {
+.category-swatch.swatch-strength {
   background: #467fe8;
 }
 
-.category-swatch.ball-handling {background: #a0eade;}
+.category-swatch.swatch-ball-handling {background: #a0eade;}
 
-.category-swatch.defense {
+.category-swatch.swatch-defense {
   background: #cebacf;
 }
 
-.category-swatch.conditioning {
+.category-swatch.swatch-conditioning {
   background: #c8e9a0;
 }
 
