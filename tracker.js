@@ -290,6 +290,7 @@ function sessionCard(session) {
   return row;
 }
 
+
 /* ===================================================================
    PAGE 2: WORKOUT BUILDER (create, save, and log full workouts)
 ==================================================================== */
