@@ -117,7 +117,7 @@ function trainingLoadChart(sessions, weekStart) {
       // if kind is strength then kind becomes strength, if not then basketball
       const group = drill.kind === "strength" ? "strength" : (drill.category || "").trim().toLowerCase();
       // adds that drill's minutes into the correct day and category
-      totals[dayIndex][kind] += drill.minutes;
+      totals[dayIndex][group] += drill.minutes;
     });
   });
 
@@ -276,7 +276,7 @@ async function loadSummary() {
       sessions[0].drills.forEach(d => { const li = element("p", "", d.title); li.prepend(element("span", "check on", "✓")); latest.append(li); });
     } else latest.append(element("small", "", "Latest session"), element("p", "status", "Nothing yet."));
 
-    main.replaceChildren(statCard("This Week", "Workouts", week), statCard("Training Load", "Basketball + strength minutes", trainingLoadChart(sessions, weekStart)), statCard("Recent Sessions", `${sessions.length} logged`, recent));
+    main.replaceChildren(statCard("This Week", "Workouts", week), statCard("Training Load", "Minutes by training category", trainingLoadChart(sessions, weekStart)), statCard("Recent Sessions", `${sessions.length} logged`, recent));
     side.replaceChildren(statCard("Shooting", "This week", shoot), statCard("Your Week", "Mon to Sun", days, latest));
     status.textContent = "";
   } catch (error) {
