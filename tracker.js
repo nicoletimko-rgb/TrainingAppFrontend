@@ -31,7 +31,7 @@ const errorText = error => error instanceof TypeError
 
 const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const fromIso = s => new Date(`${s}T00:00:00`);
-function mondayOf(d) { const x = new Date(d); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+function mondayOf(d) { const x = new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
 const shortDate = d => d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 const pct = (made, att) => att ? Math.round(made / att * 100) : 0;
 // Made and attempted shots 0 unless shooting or finishing category
