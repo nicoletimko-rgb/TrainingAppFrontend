@@ -378,10 +378,36 @@ input { font: inherit; background: #0a1230; border: 1px solid var(--line); borde
   background: #182445;
 }
 
-.load-basketball {
+.load-shooting {
   width: 100%;
   min-height: 0;
   background: linear-gradient(to top, #f46d28, #ffae63);
+  transition: height 0.25s ease;
+}
+
+.load-handling {
+  width: 100%;
+  min-height: 0;
+  background: linear-gradient(to top, #a0eade, #a0eade);
+  transition: height 0.25s ease;
+}
+
+.load-finishing {
+  width: 100%;
+  min-height: 0;
+  background: linear-gradient(to top, #9d44b5, #9d44b5);
+  transition: height 0.25s ease;
+}
+.load-defense {
+  width: 100%;
+  min-height: 0;
+  background: linear-gradient(to top, #cebacf, #cebacf);
+  transition: height 0.25s ease;
+}
+.load-conditioning {
+  width: 100%;
+  min-height: 0;
+  background: linear-gradient(to top, #c8e9a0, #c8e9a0);
   transition: height 0.25s ease;
 }
 

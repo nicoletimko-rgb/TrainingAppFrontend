@@ -92,11 +92,7 @@ function metric(icon, label, value, frac) {
 function trainingLoadChart(sessions, weekStart) {
   // creates an array with 7 objects (one object for each day of the week)
   const totals = Array.from({ length: 7 }, () => ({
-    shooting: 0,
-    "ball handling": 0,
-    finishing: 0,
-    defense: 0,
-    conditioning: 0,
+    basketball: 0,
     strength: 0
   }));
 
@@ -115,7 +111,7 @@ function trainingLoadChart(sessions, weekStart) {
     // loops through every drill inside that one workout session
     session.drills.forEach(drill => {
       // if kind is strength then kind becomes strength, if not then basketball
-      const group = drill.kind === "strength" ? "strength" : (drill.category || "").trim().toLowerCase();
+      const kind = drill.kind === "strength" ? "strength" : "basketball";
       // adds that drill's minutes into the correct day and category
       totals[dayIndex][kind] += drill.minutes;
     });
@@ -124,7 +120,7 @@ function trainingLoadChart(sessions, weekStart) {
   // finds largest total number of minutes trained on any day that week
   const maxMinutes = Math.max( // finds largest one
     1, // prevents dividing by 0 if no workouts have been logged
-    ...totals.map(day => day.shooting + day["ball handling"] + day.finishing + day.defense + day.conditioning + day.strength) // creates a list of each day's total minutes
+    ...totals.map(day => day.basketball + day.strength) // creates a list of each day's total minutes
   );
 
   const chart = element("div", "load-chart"); // creates chart container (div and class = load-chart in index.html)
@@ -132,7 +128,7 @@ function trainingLoadChart(sessions, weekStart) {
   // loops through the seven day objects
   totals.forEach((day, i) => {
     // total minutes for all categories
-    const totalMinutes = day.shooting + day["ball handling"] + day.finishing + day.defense + day.conditioning + day.strength;
+    const totalMinutes = day.basketball + day.strength;
     // actual calendar date for that column
     const date = new Date(weekStart);
     date.setDate(date.getDate() + i); // ex: weekStart + 2 = wed if weekstart = mon
@@ -150,30 +146,10 @@ function trainingLoadChart(sessions, weekStart) {
     const bar = element("div", "load-bar");
 
     // creates the basketball-colored piece of the stacked bar
-    const shooting = element("div", "load-shooting");
+    const basketball = element("div", "load-basketball");
     // calculates height as percentage
-    shooting.style.height =
-      `${(day.shooting / maxMinutes) * 100}%`;
-    
-    const handling = element("div", "load-handling");
-    // calculates height as percentage
-    handling.style.height =
-      `${(day["ball handling"] / maxMinutes) * 100}%`;
-    
-    const finishing = element("div", "load-finishing");
-    // calculates height as percentage
-    finishing.style.height =
-      `${(day.finishing / maxMinutes) * 100}%`;
-    
-    const defense = element("div", "load-defense");
-    // calculates height as percentage
-    defense.style.height =
-      `${(day.defense / maxMinutes) * 100}%`;
-    
-    const conditioning = element("div", "load-conditioning");
-    // calculates height as percentage
-    conditioning.style.height =
-      `${(day.conditioning / maxMinutes) * 100}%`;
+    basketball.style.height =
+      `${(day.basketball / maxMinutes) * 100}%`;
 
     // creates the strength colored piece of the stacked bar
     const strength = element("div", "load-strength");
@@ -181,7 +157,7 @@ function trainingLoadChart(sessions, weekStart) {
       `${(day.strength / maxMinutes) * 100}%`;
 
     // places both colored sections inside the bar
-    bar.append(shooting, handling, finishing, defense, conditioning, strength);
+    bar.append(basketball, strength);
 
     // creates the weekday label underneath the bar
     const label = element(
