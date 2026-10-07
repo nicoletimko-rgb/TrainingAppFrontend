@@ -490,7 +490,7 @@ function openLog(workout) {
     );
 
     if (isStrength) {
-      row.append(element("strong", "", d.title), made, att);
+      row.append(element("strong", "", d.title), m, made, att);
     } else {
       row.append(element("strong", "", d.title), m, made, att);
     }
@@ -514,7 +514,7 @@ function openLog(workout) {
         title: r.d.title,
         category: r.d.category,
         kind: r.d.kind || "basketball",
-        minutes: isStrength ? 0 : Number(r.minutes.value),
+        minutes: Number(r.minutes.value),
 
         shots_made: isStrength
           ? Number(r.shotsMade.value)
