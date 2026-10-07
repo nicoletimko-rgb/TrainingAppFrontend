@@ -75,7 +75,7 @@ let weekStart = mondayOf(new Date());
 
 const iconFor = label => (CATEGORIES.find(c => c.label === label) || {}).icon || "🏀";
 const hm = m => `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, "0")}m`;
-const getWeek = start => api(`/api/sessions?week_start=${iso(start)}`);
+const getWeek = start => api(`/api/sessions?week_start=${iso(mondayOf(start))}`);
 
 // Icon tile + label + value + progress bar (frac is 0 to 1). Pass "" for no icon.
 function metric(icon, label, value, frac) {
@@ -88,64 +88,87 @@ function metric(icon, label, value, frac) {
   return row;
 }
 
+// receives sessions (all logged sessions for the selected week) and weekStart (the Monday data of that selected week)
 function trainingLoadChart(sessions, weekStart) {
+  // creates an array with 7 objects (one object for each day of the week)
   const totals = Array.from({ length: 7 }, () => ({
     basketball: 0,
     strength: 0
   }));
 
+  // loops through every logged session
   sessions.forEach(session => {
+    // turns the saved date string into a JavaScript data
     const sessionDate = fromIso(session.performed_on);
+    // finds how many days after Monday that session occurred
     const dayIndex = Math.round(
       (sessionDate - weekStart) / (1000 * 60 * 60 * 24)
     );
 
+    // skips the session if it falls outside the selected 7-day week
     if (dayIndex < 0 || dayIndex > 6) return;
 
+    // loops through every drill inside that one workout session
     session.drills.forEach(drill => {
+      // if kind is strength then kind becomes strength, if not then basketball
       const kind = drill.kind === "strength" ? "strength" : "basketball";
+      // adds that drill's minutes into the correct day and category
       totals[dayIndex][kind] += drill.minutes;
     });
   });
 
-  const maxMinutes = Math.max(
-    1,
-    ...totals.map(day => day.basketball + day.strength)
+  // finds largest total number of minutes trained on any day that week
+  const maxMinutes = Math.max( // finds largest one
+    1, // prevents dividing by 0 if no workouts have been logged
+    ...totals.map(day => day.basketball + day.strength) // creates a list of each day's total minutes
   );
 
-  const chart = element("div", "load-chart");
+  const chart = element("div", "load-chart"); // creates chart container (div and class = load-chart in index.html)
 
+  // loops through the seven day objects
   totals.forEach((day, i) => {
+    // total minutes for all categories
     const totalMinutes = day.basketball + day.strength;
+    // actual calendar date for that column
     const date = new Date(weekStart);
-    date.setDate(date.getDate() + i);
+    date.setDate(date.getDate() + i); // ex: weekStart + 2 = wed if weekstart = mon
 
+    // creates one full column for that day
     const dayColumn = element("div", "load-day");
+    // creates the small minutes label above the bar (45 minutes = 45m)
     const total = element(
       "small",
       "load-total",
-      totalMinutes ? `${totalMinutes}m` : ""
+      totalMinutes ? `${totalMinutes}min` : ""
     );
 
+    // creates the bar container that holds teh colored pieces
     const bar = element("div", "load-bar");
 
+    // creates the basketball-colored piece of the stacked bar
     const basketball = element("div", "load-basketball");
+    // calculates height as percentage
     basketball.style.height =
       `${(day.basketball / maxMinutes) * 100}%`;
 
+    // creates the strength colored piece of the stacked bar
     const strength = element("div", "load-strength");
     strength.style.height =
       `${(day.strength / maxMinutes) * 100}%`;
 
+    // places both colored sections inside the bar
     bar.append(basketball, strength);
 
+    // creates the weekday label underneath the bar
     const label = element(
       "strong",
       "load-label",
       date.toLocaleDateString(undefined, { weekday: "short" })
     );
 
+    // places the minutes label, the stacked bar, and the weekday label into the day's column
     dayColumn.append(total, bar, label);
+    // adds that completed day column to the overall 7 day chart
     chart.append(dayColumn);
   });
 
