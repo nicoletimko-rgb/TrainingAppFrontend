@@ -247,7 +247,11 @@ async function loadSummary() {
     // SHOOTING: ring + best-attempted drills
     const byDrill = {};
     sessions.forEach(s => s.drills.forEach(d => {
-      if (!d.shots_attempted) return;
+        const isStrength =
+        d.kind === "strength" ||
+        (d.category || "").trim().toLowerCase() === "strength";
+
+      if (isStrength || !d.shots_attempted) return;
       const x = byDrill[d.title] || (byDrill[d.title] = { made: 0, att: 0 });
       x.made += d.shots_made; x.att += d.shots_attempted;
     }));
@@ -290,8 +294,23 @@ function sessionCard(session) {
   const row = element("article", "sess");
   const date = fromIso(session.performed_on);
   const minutes = session.drills.reduce((n, d) => n + d.minutes, 0);
-  const made = session.drills.reduce((n, d) => n + d.shots_made, 0);
-  const att = session.drills.reduce((n, d) => n + d.shots_attempted, 0);
+  const shootingDrills = session.drills.filter(d => {
+  const isStrength =
+      d.kind === "strength" ||
+      (d.category || "").trim().toLowerCase() === "strength";
+
+    return !isStrength;
+  });
+
+  const made = shootingDrills.reduce(
+    (n, d) => n + d.shots_made,
+    0
+  );
+
+  const att = shootingDrills.reduce(
+    (n, d) => n + d.shots_attempted,
+    0
+  );
   const when = element("div", "sess-date");
   when.append(element("span", "", date.toLocaleDateString(undefined, { month: "short" })), element("strong", "", String(date.getDate())));
   const icon = element("div", "sess-ico");
