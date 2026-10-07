@@ -455,31 +455,46 @@ function openLog(workout) {
 
   workout.drills.forEach(d => {
     const category = (d.category || "").trim().toLowerCase();
+    const isStrength = d.kind === "strength";
+
     const shouldTrackShots =
-      category === "shooting" || category === "finishing";
+      !isStrength &&
+      (category === "shooting" || category === "finishing");
 
     const row = element("div", "log-row");
+
     const [m, minutes] = field("Minutes", {
       type: "number",
       min: 0,
       value: d.minutes
     });
 
-    const [made, shotsMade] = field("Made", {
-      type: "number",
-      min: 0,
-      value: 0,
-      disabled: !shouldTrackShots
-    });
+    const [made, shotsMade] = field(
+      isStrength ? "Sets" : "Made",
+      {
+        type: "number",
+        min: 0,
+        value: isStrength ? 3 : 0,
+        disabled: !isStrength && !shouldTrackShots
+      }
+    );
 
-    const [att, shotsAtt] = field("Attempted", {
-      type: "number",
-      min: 0,
-      value: shouldTrackShots ? d.shots : 0,
-      disabled: !shouldTrackShots
-    });
+    const [att, shotsAtt] = field(
+      isStrength ? "Reps" : "Attempted",
+      {
+        type: "number",
+        min: 0,
+        value: isStrength ? 10 : (shouldTrackShots ? d.shots : 0),
+        disabled: !isStrength && !shouldTrackShots
+      }
+    );
 
-    row.append(element("strong", "", d.title), m, made, att);
+    if (isStrength) {
+      row.append(element("strong", "", d.title), made, att);
+    } else {
+      row.append(element("strong", "", d.title), m, made, att);
+    }
+
     panel.append(row);
     rows.push({ d, minutes, shotsMade, shotsAtt });
   });
@@ -492,14 +507,22 @@ function openLog(workout) {
       const category = (r.d.category || "").trim().toLowerCase();
       const shouldTrackShots =
         category === "shooting" || category === "finishing";
+      
+      const isStrength = r.d.kind === "strength";
 
       return {
         title: r.d.title,
         category: r.d.category,
         kind: r.d.kind || "basketball",
-        minutes: Number(r.minutes.value),
-        shots_made: shouldTrackShots ? Number(r.shotsMade.value) : 0,
-        shots_attempted: shouldTrackShots ? Number(r.shotsAtt.value) : 0
+        minutes: isStrength ? 0 : Number(r.minutes.value),
+
+        shots_made: isStrength
+          ? Number(r.shotsMade.value)
+          : (shouldTrackShots ? Number(r.shotsMade.value) : 0),
+
+        shots_attempted: isStrength
+          ? Number(r.shotsAtt.value)
+          : (shouldTrackShots ? Number(r.shotsAtt.value) : 0)
       };
     });
 
