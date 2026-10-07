@@ -443,9 +443,7 @@ input { font: inherit; background: #0a1230; border: 1px solid var(--line); borde
   background: #467fe8;
 }
 
-.category-swatch.ball-handling {
-  background: #a0eade;
-}
+.category-swatch.ball-handling {background: #a0eade;}
 
 .category-swatch.defense {
   background: #cebacf;
